@@ -1,0 +1,34 @@
+---
+title: "PS270 Final Project"
+author: Anya Muehlheuser
+description: "My final project"
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+# Milestone 1
+## Project thoughts
+
+I am interested in exploring data related to political rhetoric or the effects of social media on voting behavior. 
+
+_____________________________
+# Milestone 2
+```{r}
+library(readr)
+ciri <- read_csv("data/CIRI Data 1981_2011 2014.04.14.csv", show_col_types = FALSE)
+```
+
+```{r}
+library(dplyr)
+glimpse(ciri)
+head(ciri)
+```
+
+Research question: Does higher levels of economic development lead to better government respect for physical integrity rights?
+
+The hypothesis is that more democratic countries will demonstrate higher levels of respect for physical integrity rights, which is rooted in the institutional accountability theory, which argues that democratic leaders face electoral constraints, opposition scrutiny, and a free press. The key variable is the level of democracy, which I will measure using a democracy index included in the dataset, such as Polity scores. Higher values reflect more democratic political systems. The dependent variable is the Physical Integrity Rights Index, which ranges from 0 to 8 and measures government respect for freedom from torture, political imprisonment, etc, with higher scores representing greater respect for human rights. If the hypothesis is correct, there should be a positive and significant relationship between democracy and the Physical Integrity Rights Index. The hypothesis would be disconfirmed if there is no statistically significant relationship or if the relationship is negative, which would suggest that higher levels of democracy are not associated with improved human rights protections. 
+
+
+
