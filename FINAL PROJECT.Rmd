@@ -30,5 +30,35 @@ Research question: Does higher levels of economic development lead to better gov
 
 The hypothesis is that more democratic countries will demonstrate higher levels of respect for physical integrity rights, which is rooted in the institutional accountability theory, which argues that democratic leaders face electoral constraints, opposition scrutiny, and a free press. The key variable is the level of democracy, which I will measure using a democracy index included in the dataset, such as Polity scores. Higher values reflect more democratic political systems. The dependent variable is the Physical Integrity Rights Index, which ranges from 0 to 8 and measures government respect for freedom from torture, political imprisonment, etc, with higher scores representing greater respect for human rights. If the hypothesis is correct, there should be a positive and significant relationship between democracy and the Physical Integrity Rights Index. The hypothesis would be rejected if there is no statistically significant relationship or if the relationship is negative, which would suggest that higher levels of democracy are not associated with improved human rights protections. 
 
+____________________________________________________
+# Milestone 3
+## Cleaning the Data
+```{r}
+library(dplyr)
+
+ciri_clean <- ciri %>%
+  select(country = CTRY, year = YEAR, physint = PHYSINT, polity = POLITY) %>%
+  filter(!is.na(physint), !is.na(polity))
+```
+
+
+
+## Visual
+```{r}
+library(ggplot2)
+
+ggplot(ciri_clean, aes(x = polity, y = physint)) +
+  geom_jitter(alpha = 0.3, width = 0.3, height = 0.25,
+              size = 1.5, color = "#5b8dd9") +
+  geom_smooth(method = "lm", color = "#c04828", se = FALSE) +
+  labs(
+    title = "Democracy and physical integrity rights",
+    x = "Polity score (-10 to +10)",
+    y = "Physical integrity index (0-8)"
+  ) +
+  theme_minimal()
+```
+
+The graph shows a positive relationship between democracy and physical integrity rights: as the Polity score increases (more democratic), the Physical Integrity Rights Index tends to go up too.
 
 
