@@ -59,6 +59,6 @@ ggplot(ciri_clean, aes(x = polity, y = physint)) +
   theme_minimal()
 ```
 
-The graph shows a positive relationship between democracy and physical integrity rights: as the Polity score increases (more democratic), the Physical Integrity Rights Index tends to go up too. 
+The graph shows a positive relationship between democracy and physical integrity rights: as the Polity score increases (more democratic), the Physical Integrity Rights Index tends to go up too.
 
 
