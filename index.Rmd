@@ -86,4 +86,6 @@ The results show that the coefficient on Polity is negative (-0.00156), indicati
 
 This finding contradicts the initial hypothesis and the pattern suggested by the visualization, which showed a positive relationship. One possible explanation is that the relationship is more complex than a simple linear trend, or that other factors not included in the model are influencing human rights outcomes.
 
+[View Final Project](FINAL-PROJECT.html)
+
 
