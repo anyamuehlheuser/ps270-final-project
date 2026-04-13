@@ -61,4 +61,29 @@ ggplot(ciri_clean, aes(x = polity, y = physint)) +
 
 The graph shows a positive relationship between democracy and physical integrity rights: as the Polity score increases (more democratic), the Physical Integrity Rights Index tends to go up too. 
 
+_____________________________________________________________
+# Milestone 4
+
+## Visuals
+
+```{r}
+model <- lm(physint ~ polity, data = ciri_clean)
+summary(model)
+
+library(broom)
+library(knitr)
+
+tidy(model) |>
+  kable(digits = 4, caption = "Regression Results: Physical Integrity Rights on Democracy")
+```
+
+
+
+## Analysis
+To further examine the relationship between democracy and physical integrity rights, I ran a linear regression using physical integrity rights as the dependent variable and Polity score as the independent variable.
+
+The results show that the coefficient on Polity is negative (-0.00156), indicating that higher levels of democracy are associated with slightly lower levels of physical integrity rights. However, the effect is extremely small in magnitude. The relationship is statistically significant (p < 0.001), meaning it is unlikely to be due to random chance.
+
+This finding contradicts the initial hypothesis and the pattern suggested by the visualization, which showed a positive relationship. One possible explanation is that the relationship is more complex than a simple linear trend, or that other factors not included in the model are influencing human rights outcomes.
+
 

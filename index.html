@@ -283,6 +283,85 @@ ggplot(ciri_clean, aes(x = polity, y = physint)) +
 <p>The graph shows a positive relationship between democracy and
 physical integrity rights: as the Polity score increases (more
 democratic), the Physical Integrity Rights Index tends to go up too.</p>
+<hr />
+</div>
+</div>
+<div id="milestone-4" class="section level1">
+<h1>Milestone 4</h1>
+<div id="visuals" class="section level2">
+<h2>Visuals</h2>
+<pre class="r"><code>model &lt;- lm(physint ~ polity, data = ciri_clean)
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = physint ~ polity, data = ciri_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.5675 -1.5865  0.2606  1.8629  3.9125 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.6314378  0.0688055   81.85   &lt;2e-16 ***
+## polity      -0.0015596  0.0001308  -11.93   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.305 on 4910 degrees of freedom
+## Multiple R-squared:  0.02815,    Adjusted R-squared:  0.02796 
+## F-statistic: 142.2 on 1 and 4910 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>library(broom)
+library(knitr)
+
+tidy(model) |&gt;
+  kable(digits = 4, caption = &quot;Regression Results: Physical Integrity Rights on Democracy&quot;)</code></pre>
+<table>
+<caption>Regression Results: Physical Integrity Rights on
+Democracy</caption>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">5.6314</td>
+<td align="right">0.0688</td>
+<td align="right">81.8458</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">polity</td>
+<td align="right">-0.0016</td>
+<td align="right">0.0001</td>
+<td align="right">-11.9265</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<p>To further examine the relationship between democracy and physical
+integrity rights, I ran a linear regression using physical integrity
+rights as the dependent variable and Polity score as the independent
+variable.</p>
+<p>The results show that the coefficient on Polity is negative
+(-0.00156), indicating that higher levels of democracy are associated
+with slightly lower levels of physical integrity rights. However, the
+effect is extremely small in magnitude. The relationship is
+statistically significant (p &lt; 0.001), meaning it is unlikely to be
+due to random chance.</p>
+<p>This finding contradicts the initial hypothesis and the pattern
+suggested by the visualization, which showed a positive relationship.
+One possible explanation is that the relationship is more complex than a
+simple linear trend, or that other factors not included in the model are
+influencing human rights outcomes.</p>
 </div>
 </div>
 
