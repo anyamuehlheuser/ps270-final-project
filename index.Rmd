@@ -19,7 +19,7 @@ h1, h2, h3 {
 }
 ```
 
-```{r load-data}
+```{r load-data,}
 library(readr)
 library(dplyr)
 library(readxl)
@@ -116,6 +116,10 @@ Despite the significance of this finding, it should not be interpreted as a caus
 
 # Conclusion
 This analysis finds support for the hypothesis that more democratic countries demonstrate greater respect for physical integrity rights. The coefficient on the Polity2 score is **positive, substantively meaningful, statistically significant**, and aligns with the institutional accountability theory that motivated the hypothesis. However, several important limitations prevent a causal interpretation of this finding. The cross-sectional time-series design is vulnerable to omitted variables bias. For example, wealthier countries may be more democratic and more rights-respecting for independent reasons. Additionally, the observational nature of the data means we cannot rule out reverse causality, where improving human rights conditions contribute to democratization rather than the other way around. To improve this analysis, future work could add country fixed effects to control for time-invariant differences between countries, include GDP per capita as a co variate to address wealth confounding, and extend the time series beyond 2011 using more recent data. 
+
+```{r}
+r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+```
 
 [View Final Project](FINAL-PROJECT.html)
 
