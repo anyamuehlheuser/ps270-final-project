@@ -1,78 +1,127 @@
 ---
-title: "PS270 Final Project"
+title: "Democracy and Human Rights: Evidence from Cross-National Data"
 author: Anya Muehlheuser
 description: "My final project"
 output:
-  distill::distill_article:
-    self_contained: false
+  prettydoc::html_pretty:
+    theme: tactile
+    highlight: github
+
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
 
-# Milestone 1
-## Project thoughts
+```{css}
+h1, h2, h3 {
+  color:  red;
+}
+```
 
-I am interested in exploring data related to political rhetoric or the effects of social media on voting behavior. 
+```{r load-data,}
+library(readr)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(broom)
+library(knitr)
+library(modelsummary)
+
+ciri <- read_csv("data/CIRI Data 1981_2011 2014.04.14.csv", show_col_types = FALSE)
+polity_raw <- read_excel("data/p5v2018.xls")
+```
+
+```{r clean-data}
+ciri_slim <- ciri |>
+  select(
+    country = CTRY,
+    ccode = COW,
+    year = YEAR,
+    physint = PHYSINT
+  ) |>
+  filter(!is.na(physint), !is.na(ccode))
+
+polity_scores <- polity_raw |>
+  select(ccode, year, polity2) |>
+  filter(!is.na(polity2))
+
+ciri_clean <- ciri_slim |>
+  inner_join(polity_scores, by = c("ccode", "year")) |>
+  filter(!is.na(polity2))
+```
+
+# Introduction
+Do governments that are more democratic treat their citizens better? This project investigates whether higher levels of democracy are associated with greater government respect for physical integrity rights, which include protections against torture, political imprisonment, extrajudicial killing, and disappearances. Understanding this relationship matters because physical integrity rights represent some of the most fundamental protections a state can offer to its citizens, and violations of these rights are still widespread worldwide. This analysis tests the hypothesis that **more democratic countries will demonstrate higher levels of respect for physical integrity rights**. This expectation is grounded in the institutional accountability theory, which posits that democratic leaders face electoral constraints, opposition scrutiny, and a free press, all of which create incentives to avoid systematic human rights abuses. If this hypothesis is correct, we would expect to see a **positive and statistically significant relationship between a country's democracy score and its physical integrity rights score**. The hypothesis would be rejected if the relationship is negative or statistically insignificant. 
+ 
 
 _____________________________
-# Milestone 2
-```{r}
-library(readr)
-ciri <- read_csv("data/CIRI Data 1981_2011 2014.04.14.csv", show_col_types = FALSE)
-```
+# Data
+This analysis draws from two datasets covering the period from 1981 to 2011. Human rights data comes from the **CIRI Human Rights Dataset**, which provides expert-coded annual scores for countries around the world. Democracy data comes from the **Polity5 project**, which has tracked regime characteristics around the global for decades. The two datasets were merged by country code and year. Because these datasets come from two separate sources with different structures, they required cleaning and merging by shared country code (COW codes) and year before proceeding to analysis. This research design is cross-sectional time-series, meaning it observes many countries across many years, but does not use randomization or a natural experiment to isolate causal effects. 
 
-```{r}
-library(dplyr)
-glimpse(ciri)
-head(ciri)
-```
+The dependent variable is the **Physical Integrity Rights Index (physint)**, which comes from the CIRI dataset. It is an additive index ranging from 0 to 8, where higher scores indicate greater government respect for freedom from torture, political imprisonment, extrajudicial killing, and forced disappearance. Each component is coded by human rights experts using reports from sources such as Amnesty International and the U.S. State Department. 
 
-Research question: Does higher levels of economic development lead to better government respect for physical integrity rights?
+The key independent variable is the **Polity2 score** from the Polity5 dataset, which ranges from -10 (full autocratic) to +10 (fully democratic). This score is constructed by expert coders who assess the competitiveness of political participation, the openness of executive recruitment, and constraints on executive authority. The hypothesis would be supported by a positive, statistically significant coefficient on Polity2 in a regression predicting the Physical Integrity Rights Index. 
 
-The hypothesis is that more democratic countries will demonstrate higher levels of respect for physical integrity rights, which is rooted in the institutional accountability theory, which argues that democratic leaders face electoral constraints, opposition scrutiny, and a free press. The key variable is the level of democracy, which I will measure using a democracy index included in the dataset, such as Polity scores. Higher values reflect more democratic political systems. The dependent variable is the Physical Integrity Rights Index, which ranges from 0 to 8 and measures government respect for freedom from torture, political imprisonment, etc, with higher scores representing greater respect for human rights. If the hypothesis is correct, there should be a positive and significant relationship between democracy and the Physical Integrity Rights Index. The hypothesis would be rejected if there is no statistically significant relationship or if the relationship is negative, which would suggest that higher levels of democracy are not associated with improved human rights protections. 
-
-____________________________________________________
-# Milestone 3
-## Cleaning the Data
-```{r}
-library(dplyr)
-
-ciri_clean <- ciri %>%
-  select(country = CTRY, year = YEAR, physint = PHYSINT, polity = POLITY) %>%
-  filter(!is.na(physint), !is.na(polity))
-```
-
-
-
-## Visual
-```{r}
-library(ggplot2)
-
-ggplot(ciri_clean, aes(x = polity, y = physint)) +
-  geom_jitter(alpha = 0.3, width = 0.3, height = 0.25,
-              size = 1.5, color = "#5b8dd9") +
-  geom_smooth(method = "lm", color = "#c04828", se = FALSE) +
+```{r physint-distribution}
+ggplot(ciri_clean, aes(x = physint)) +
+  geom_histogram(binwidth = 1, fill = "indianred", color = "white") +
   labs(
-    title = "Democracy and physical integrity rights",
-    x = "Polity score (-10 to +10)",
-    y = "Physical integrity index (0-8)"
+    title = "Distribution of Physical Integrity Rights Index",
+    subtitle = "CIRI Dataset, 1981–2011",
+    x = "Physical Integrity Index (0–8)",
+    y = "Number of Country-Years"
   ) +
   theme_minimal()
 ```
 
-The graph shows a positive relationship between democracy and physical integrity rights: as the Polity score increases (more democratic), the Physical Integrity Rights Index tends to go up too.
 
-_____________________________________________________________
-# Milestone 4
-
-## Visuals
-
-```{r}
-model <- lm(physint ~ polity, data = ciri_clean)
-summary(model)
-
-library(broom)
-library(knitr)
-
-tidy(model) |>
-  kable(digits = 4, caption = "Regression Results: Physical Integrity Rights on Democracy")
+____________________________________________________
+# Results
+## *Scatterplot*
+```{r scatter-plot}
+ggplot(ciri_clean, aes(x = polity2, y = physint)) +
+  geom_jitter(alpha = 0.3, width = 0.3, height = 0.25,
+              size = 1.5, color = "cyan") +
+  geom_smooth(method = "lm", color = "indianred", se = FALSE) +
+  labs(
+    title = "Democracy and Physical Integrity Rights",
+    subtitle = "Each point represents one country-year",
+    x = "Polity Score (–10 to +10)",
+    y = "Physical Integrity Index (0–8)"
+  ) +
+  theme_minimal()
 ```
+
+## *Regression*
+```{r regression}
+model <- lm(physint ~ polity2, data = ciri_clean)
+
+modelsummary(model,
+  stars = TRUE,
+  coef_rename = c("polity2" = "Polity Score",
+                  "(Intercept)" = "Intercept"),
+  gof_omit = "IC|Log|F",
+  title = "Regression Results: Physical Integrity Rights on Democracy"
+)
+```
+
+
+# Analysis
+The scatter plot shows a clear **positive relationship** between democracy and physical integrity rights: as Polity scores increase, Physical Integrity Index scores tend to rise as well. The trend line reinforces this pattern, and while there is substantial variation around the line, particularly at mid-range Polity scores, the overall upward slope is consistent with the hypothesis. 
+
+The regression results confirm the pattern from the scatter plot. The coefficient on Polity Score is **0.127**, meaning that a one-unit increase in a country's Polity2 score is associated with a 0.127-point increase in the Physical Integrity Rights Index, holding all else constant. To put this in concrete terms, a country moving from full autocracy (-10) to full democracy (+10), a 20-unit shift, is predicted to score about 2.5 points higher on the rights index, which represents more than 30% of the full 0-8 scale. This relationship is statistically significant at the **p < 0.001** level, meaning it is extremely unlikely to have arisen by chance alone. 
+
+Despite the significance of this finding, it should not be interpreted as a causal effect. This is a cross-sectional time-series analysis without randomization or a strong natural experiment, which means the bias of omitted variables is a concern. Countries that are more democratic tend to also be wealthier and located in regions with stronger human rights norms, all of which may independently contribute to better rights outcomes. Without controlling for these factors, it is not certain that democracy itself is driving the improvement in physical integrity rights. 
+
+# Conclusion
+This analysis finds support for the hypothesis that more democratic countries demonstrate greater respect for physical integrity rights. The coefficient on the Polity2 score is **positive, substantively meaningful, statistically significant**, and aligns with the institutional accountability theory that motivated the hypothesis. However, several important limitations prevent a causal interpretation of this finding. The cross-sectional time-series design is vulnerable to omitted variables bias. For example, wealthier countries may be more democratic and more rights-respecting for independent reasons. Additionally, the observational nature of the data means we cannot rule out reverse causality, where improving human rights conditions contribute to democratization rather than the other way around. To improve this analysis, future work could add country fixed effects to control for time-invariant differences between countries, include GDP per capita as a co variate to address wealth confounding, and extend the time series beyond 2011 using more recent data. 
+
+```{r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+```
+
+
+
+[View Final Project](FINAL-PROJECT.html)
+
+

@@ -1,0 +1,30 @@
+---
+title: "Lecture 18"
+author: "Anya Muehlheuser"
+date: "2026-04-22"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Sampling Distribution
+```{r}
+library(tidyverse)
+library(ggplot2)
+midwest
+```
+
+Let's plot a sampling distribution
+
+```{r}
+library(infer)
+midwest |>
+  rep_slice_sample(n = 50, reps = 100) |>
+  group_by(replicate) |>
+  summarize(`Average Percent College` = mean(percollege)) |>
+  ggplot(aes(x = `Average Percent College` )) +
+  geom_histogram(mapping = aes(y = after_stat(density)), binwidth = 0.5)
+```
+
